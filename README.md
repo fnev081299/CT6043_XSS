@@ -41,14 +41,14 @@ Open the developer tools in browser and open the "Console" sub-tab.
 
 Copy/paste and run:
 ```js
-encodeURIComponent('<img src="does-not-exist" onerror="alert(\'hi!\')">');
+encodeURIComponent('<img src="does-not-exist" onerror="alert(\'XSS!\')">');
 ```
 
 Paste the output into the address bar:
 ```
-http://localhost:3000/?q=%3Cimg%20src%3D%22does-not-exist%22%20onerror%3D%22alert('Potential XSS!')%22%3E
+http://localhost:3000/?q=%3Cimg%20src%3D%22does-not-exist%22%20onerror%3D%22alert('XSS!')%22%3E
 ```
-Or click [this link](http://localhost:3000/?q=%3Cimg%20src%3D%22does-not-exist%22%20onerror%3D%22alert('Potential XSS')%22%3E).
+Or click [this link](http://localhost:3000/?q=%3Cimg%20src%3D%22does-not-exist%22%20onerror%3D%22alert('XSS')%22%3E).
 
 You should see an alert :: "Potential XSS!".
 
