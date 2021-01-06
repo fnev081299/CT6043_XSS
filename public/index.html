@@ -1,0 +1,170 @@
+<html>
+<head>
+	<!-- Styling -->
+    <style>
+        /*https://www.w3schools.com/howto/howto_css_register_form.asp*/
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: lightgray;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Add padding to containers */
+        .container {
+            padding: 16px;
+            background-color: white;
+        }
+
+        /* Full-width input fields */
+        input[type=text], input[type=password], input[type=email] {
+            width: 100%;
+            padding: 15px;
+            margin: 5px 0 22px 0;
+            display: inline-block;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
+            background-color: #ddd;
+            outline: none;
+        }
+
+        /* Overwrite default styles of hr */
+        hr {
+            border: 1px solid #f1f1f1;
+            margin-bottom: 25px;
+        }
+
+        /* Set a style for the submit button */
+        .g {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            opacity: 0.9;
+        }
+
+        .g:hover {
+            opacity: 1;
+        }
+
+        /* Add a blue text color to links */
+        a {
+            color: dodgerblue;
+        }
+
+        /* Set a grey background color and center the text of the "sign in" section */
+        .signin {
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+    </style>
+	<title>XSS Example Site</title>
+</head>
+<body>
+
+	<div class="container">
+		<!-- A simple form -->
+		<form action="" method="GET">
+			<!-- Adds `?q=VALUE` to the URL when submitted -->
+			<input type="text" name="q">
+			<input type="submit" value="Search" class="g">
+		</form>
+	</div>
+	
+	<!-- The results inserted here -->
+	<div id="results"></div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+
+			
+			// Get the search query from the URL.
+			var q = getQueryParameter('q');
+
+			if (q) {
+
+				search(q, function(error, results) {
+					Results(q, results);
+				});
+			}
+		});
+
+		function search(q, callback) {
+
+			// Fake results.
+			var results = [
+				'Value 1',
+				'Value 2',
+				'Value 3'
+			];
+
+			callback(null, results);
+		}
+
+		// Unsafe:
+		function Results(q, results) {
+
+			var resEl = document.querySelector('#results');
+			var html = '';
+
+			html += '<p>Your search query:</p>';
+			html += '<pre>' + q + '</pre>';
+			html += '<ul>';
+
+			for (var index = 0; index < results.length; index++) {
+				html += '<li>' + results[index] + '</li>';
+			}
+
+			html += '</ul>';
+
+			resEl.innerHTML = html;
+		}
+
+		// Safe:
+		// function Results(q, results) {
+		// 	var resEl = document.querySelector('#results');
+		// 	var html = '';
+
+		// 	html += '<p>Your search query:</p>';
+		// 	html += '<pre></pre>';
+		// 	html += '<ul>';
+
+		// 	for (var index = 0; index < results.length; index++) {
+		// 		html += '<li>' + results[index] + '</li>';
+		// 	}
+
+		// 	html += '</ul>';
+
+		// 	resEl.innerHTML = html;
+
+		// 	var queryTextEl = document.querySelector('#results pre');
+		// 	queryTextEl.textContent = q;
+		// }
+
+		function getQueryParameter(name) {
+
+			var ps = window.location.search.substring(1).split('&');
+			var p;
+
+			for (var index = 0; index < ps.length; index++) {
+
+				p = ps[index].split('=');
+
+				if (decodeURIComponent(p[0]) === name) {
+					return decodeURIComponent(p[1]);
+				}
+			}
+
+			return false;
+		}
+	</script>
+</body>
+</html>
